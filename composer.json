@@ -1,0 +1,30 @@
+{
+  "name" : "t49tran/abrlookupbundle",
+  "description" : "Simple Abr Lookup bundle",
+  "type" : "symfony-bundle",
+  "authors" : [{
+    "name" : "Duong Tran",
+    "email" : "tranthaiduong1210@gmail.com"
+  }],
+  "keywords" : [
+    "abr lookup bundle"
+  ],
+  "license" : [
+    "MIT"
+  ],
+  "require" : {
+  },
+  "autoload" : {
+    "psr-0" : {
+      "t49tran\\AbrLookupBundle" : ""
+    }
+  },
+  "target-dir" : "t49tran/AbrLookupBundle",
+  "repositories" : [{
+  }],
+  "extra" : {
+    "branch-alias" : {
+      "dev-master" : "1.0-dev"
+    }
+  }
+}

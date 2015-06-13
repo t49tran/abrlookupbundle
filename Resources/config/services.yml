@@ -1,0 +1,7 @@
+services:
+#    abr_lookup.example:
+#        class: t49tran\AbrLookupBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+     abr_lookup.service:
+         class: t49tran\AbrLookupBundle\LookupService\LookupService
+         arguments: ['%abr_lookup.guid%','%abr_lookup.end_point%']
