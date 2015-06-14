@@ -28,6 +28,13 @@ class LookupService {
         $this->soap_client = new  \nusoap_client($this->soap_end_point, true);;
     }
 
+    /**
+     * @param $abn
+     * @param bool $historical_details
+     * @return $this|null
+     *
+     * TODO: merge this function with acnLookUp function to remove duplicated lines
+     */
     public function abnLookUp($abn,$historical_details = false){
 
         $abn = preg_replace("/\s/", "", $abn);
@@ -44,7 +51,7 @@ class LookupService {
         if($this->soap_client->fault)
             return null;
 
-        if(!empty($result["response"]["exception"]))
+        if(!empty($result["ABRPayloadSearchResults"]["response"]["exception"]))
             return null;
 
         $abr = $this->initializeAbr($result);
@@ -69,7 +76,7 @@ class LookupService {
         if($this->soap_client->fault)
             return null;
 
-        if(!empty($result["response"]["exception"]))
+        if(!empty($result["ABRPayloadSearchResults"]["response"]["exception"]))
             return null;
 
         $abr = $this->initializeAbr($result);
