@@ -44,26 +44,33 @@ class LookupService {
         if($this->soap_client->fault)
             return null;
 
-        $OutputABN = $result['ABRPayloadSearchResults']['response']['businessEntity']['ABN']['identifierValue'];
-        $OutputABNStatus = $result['ABRPayloadSearchResults']['response']['businessEntity']['entityStatus']['entityStatusCode'];
-        $OutputASICNumber = $result['ABRPayloadSearchResults']['response']['businessEntity']['ASICNumber'];
-        $OutputEntityName = $result['ABRPayloadSearchResults']['response']['businessEntity']['mainName']['organisationName'];
-        $OutputTradingName = $result['ABRPayloadSearchResults']['response']['businessEntity']['mainTradingName']['organisationName'];
+        $abr = $this->initializeAbr($result);
 
-        $OutputOrganisationType = $result['ABRPayloadSearchResults']['response']['businessEntity']['entityType']['entityDescription'];
-        $OutputState = $result['ABRPayloadSearchResults']['response']['businessEntity']['mainBusinessPhysicalAddress']['stateCode'];
-        $OutputPostcode = $result['ABRPayloadSearchResults']['response']['businessEntity']['mainBusinessPhysicalAddress']['postcode'];
+        $this->abr = $abr;
 
-        $abr = new ABR();
+        return $this;
+    }
 
-        $abr->setAbnNumber($OutputABN);
-        $abr->setStatus($OutputABNStatus);
-        $abr->setAcnNumber($OutputASICNumber);
-        $abr->setEntityName($OutputEntityName);
-        $abr->setTradingName($OutputTradingName);
-        $abr->setState($OutputState);
-        $abr->setPostcode($OutputPostcode);
-        $abr->setOrganisationType($OutputOrganisationType);
+    public function acnLookup($acn,$historical_details = false){
+        $acn = preg_replace("/\s/", "", $acn);
+
+        $historical_details = ($historical_details) ? "Y" : "N";
+
+        $param = array('searchString' => $acn,
+            'includeHistoricalDetails' => $historical_details,
+            'authenticationGuid' => $this->abr_api_key
+        );
+
+        $result = $this->soap_client->call("ABRSearchByASIC",array('parameters' => $param), '', '', false, true);
+
+        if($this->soap_client->fault)
+            return null;
+
+        $abr = $this->initializeAbr($result);
+
+        echo "<pre>";
+        var_dump($result);
+        echo "</pre>";
 
         $this->abr = $abr;
 
@@ -85,5 +92,31 @@ class LookupService {
                 return true;
         }
         return false;
+    }
+
+    public function initializeAbr($result){
+
+        $OutputABN = $result['ABRPayloadSearchResults']['response']['businessEntity']['ABN']['identifierValue'];
+        $OutputABNStatus = $result['ABRPayloadSearchResults']['response']['businessEntity']['entityStatus']['entityStatusCode'];
+        $OutputASICNumber = $result['ABRPayloadSearchResults']['response']['businessEntity']['ASICNumber'];
+        $OutputEntityName = $result['ABRPayloadSearchResults']['response']['businessEntity']['mainName']['organisationName'];
+        $OutputTradingName = $result['ABRPayloadSearchResults']['response']['businessEntity']['mainTradingName']['organisationName'];
+
+        $OutputOrganisationType = $result['ABRPayloadSearchResults']['response']['businessEntity']['entityType']['entityDescription'];
+        $OutputState = $result['ABRPayloadSearchResults']['response']['businessEntity']['mainBusinessPhysicalAddress']['stateCode'];
+        $OutputPostcode = $result['ABRPayloadSearchResults']['response']['businessEntity']['mainBusinessPhysicalAddress']['postcode'];
+
+        $abr = new ABR();
+
+        $abr->setAbnNumber($OutputABN);
+        $abr->setStatus($OutputABNStatus);
+        $abr->setAcnNumber($OutputASICNumber);
+        $abr->setEntityName($OutputEntityName);
+        $abr->setTradingName($OutputTradingName);
+        $abr->setState($OutputState);
+        $abr->setPostcode($OutputPostcode);
+        $abr->setOrganisationType($OutputOrganisationType);
+
+        return $abr;
     }
 }
