@@ -44,6 +44,9 @@ class LookupService {
         if($this->soap_client->fault)
             return null;
 
+        if(!empty($result["response"]["exception"]))
+            return null;
+
         $abr = $this->initializeAbr($result);
 
         $this->abr = $abr;
@@ -66,11 +69,10 @@ class LookupService {
         if($this->soap_client->fault)
             return null;
 
-        $abr = $this->initializeAbr($result);
+        if(!empty($result["response"]["exception"]))
+            return null;
 
-        echo "<pre>";
-        var_dump($result);
-        echo "</pre>";
+        $abr = $this->initializeAbr($result);
 
         $this->abr = $abr;
 
@@ -78,12 +80,16 @@ class LookupService {
     }
 
     public function isAbnValid(){
+        if(!$this->abr)
+            return false;
         if($this->abr->getAbnNumber())
             return true;
         return false;
     }
 
     public function isAcnValid($acn = null){
+        if(!$this->abr)
+            return false;
         if($acn){
             if($this->abr->getAcnNumber()==preg_replace("/\s/", "", $acn))
                 return true;
