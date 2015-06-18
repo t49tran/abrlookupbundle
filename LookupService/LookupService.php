@@ -113,7 +113,12 @@ class LookupService {
         $OutputABNStatus = $result['ABRPayloadSearchResults']['response']['businessEntity']['entityStatus']['entityStatusCode'];
         $OutputASICNumber = $result['ABRPayloadSearchResults']['response']['businessEntity']['ASICNumber'];
         $OutputEntityName = $result['ABRPayloadSearchResults']['response']['businessEntity']['mainName']['organisationName'];
-        $OutputTradingName = $result['ABRPayloadSearchResults']['response']['businessEntity']['mainTradingName']['organisationName'];
+        /**
+         * Not all query will be returned with Trading Name
+         */
+        $OutputTradingName = (isset($result['ABRPayloadSearchResults']['response']['businessEntity']['mainTradingName'])) ?
+            $result['ABRPayloadSearchResults']['response']['businessEntity']['mainTradingName']['organisationName']
+            : $result['ABRPayloadSearchResults']['response']['businessEntity']['mainName']['organisationName'];
 
         $OutputOrganisationType = $result['ABRPayloadSearchResults']['response']['businessEntity']['entityType']['entityDescription'];
         $OutputState = $result['ABRPayloadSearchResults']['response']['businessEntity']['mainBusinessPhysicalAddress']['stateCode'];
